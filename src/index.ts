@@ -1,34 +1,37 @@
 import fetch, { Response } from 'node-fetch';
 import { Headers } from 'node-fetch';
 
-interface Range {
+import TendzinClientError from './TendzinClientError';
+import TendzinClientRequestError from './TendzinClientRequestError';
+
+interface IRange {
   readonly upper: string;
   readonly lower: string;
 }
 
-interface Event {
-  readonly range: Range;
+interface IEvent {
+  readonly range: IRange;
   readonly delta: number;
   readonly operation: string;
   readonly column: string;
 }
 
-interface Inventory {
-  readonly range: Range;
+interface IInventory {
+  readonly range: IRange;
   readonly count: number;
   readonly total: number;
 }
 
-interface ContiguousInventory {
-  readonly inventories: Inventory[];
+interface IContiguousInventory {
+  readonly inventories: IInventory[];
 }
 
-interface Status {
+interface IStatus {
   readonly id: string;
   readonly uptime: number;
 }
 
-interface RequestOptions {
+interface IRequestOptions {
   host: string;
   protocol: string;
   headers: any;
@@ -36,7 +39,7 @@ interface RequestOptions {
   method: string;
 }
 
-interface GetClient {
+interface IGetClient {
   token?: string;
   node?: string;
 }
@@ -46,25 +49,6 @@ const Accept = 'application/json';
 const ContentType = 'application/json';
 
 const ContentTypeReg = new RegExp(ContentType);
-
-class TendzinClientError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = this.constructor.name;
-    Error.captureStackTrace(this, this.constructor);
-  }
-}
-
-class TendzinClientRequestError extends TendzinClientError {
-  public status: number;
-
-  constructor(message: string, status: number) {
-    super(message);
-    this.status = status || 500;
-    this.name = this.constructor.name;
-    Error.captureStackTrace(this, this.constructor);
-  }
-}
 
 function isJSONResponse(response: Response): boolean {
   const contentType = response.headers.get('content-type');
@@ -82,7 +66,7 @@ function isJSONResponse(response: Response): boolean {
   return true;
 }
 
-async function request(path: string, options: RequestOptions): Promise<any> {
+async function request(path: string, options: IRequestOptions): Promise<any> {
   const url = `${options.protocol}://${options.host}/${path}`;
   const response = await fetch(url, { headers: options.headers, body: options.body, method: options.method });
 
@@ -114,10 +98,10 @@ function headers(token: string) {
   };
 }
 
-function mergeOptions(options: any, token: string, data: any, method: string): RequestOptions {
-  const newOptions: RequestOptions = {
-    method,
+function mergeOptions(options: any, token: string, data: any, method: string): IRequestOptions {
+  const newOptions: IRequestOptions = {
     host: 'sydney.tendzin.com',
+    method,
     protocol: 'https',
     ...options,
     headers: {
@@ -138,7 +122,6 @@ function postRequest(path: string, token: string, data: any, options: any) {
 }
 
 function patchRequest(path: string, token: string, data: any, options: any) {
-  console.log(data);
   return request(path, mergeOptions(options, token, data, 'patch'));
 }
 
@@ -146,7 +129,7 @@ function getRequest(path: string, token: string, options: any) {
   return request(path, mergeOptions(options, token, null, 'get'));
 }
 
-export = function({ token, node }: GetClient = {}) {
+export = ({ token, node }: IGetClient = {}) => {
   if (!token) {
     throw new TendzinClientError(
       `missing property "token", login at tendzin.com and issue a token for node you wish to use`,
@@ -160,25 +143,25 @@ export = function({ token, node }: GetClient = {}) {
   const host = `${node}.tendzin.com`;
 
   return {
-    transact: async (events: Event[], uuid: string, options: any = {}): Promise<boolean> => {
-      await patchRequest(`range/day/${uuid}`, token, { events }, { host, ...options });
-      return true;
-    },
-    spawn: async (options: any = {}): Promise<Status> => {
-      const { result } = await postRequest('range/day', token, null, { host, ...options });
-      return result;
-    },
-    getInventory: async (uuid: string, options: any = {}): Promise<Inventory[]> => {
-      const { result } = await getRequest(`range/day/${uuid}/inventories`, token, { host, ...options });
-      return result;
-    },
-    getContiguousInventory: async (uuid: string, options: any = {}): Promise<ContiguousInventory[]> => {
+    getContiguousInventory: async (uuid: string, options: any = {}): Promise<IContiguousInventory[]> => {
       const { result } = await getRequest(`range/day/${uuid}/contiguous-inventories`, token, { host, ...options });
       return result;
     },
-    getStatus: async (uuid: string, options: any = {}): Promise<Status> => {
+    getInventory: async (uuid: string, options: any = {}): Promise<IInventory[]> => {
+      const { result } = await getRequest(`range/day/${uuid}/inventories`, token, { host, ...options });
+      return result;
+    },
+    getStatus: async (uuid: string, options: any = {}): Promise<IStatus> => {
       const { result } = await getRequest(`range/day/${uuid}`, token, { host, ...options });
       return result;
+    },
+    spawn: async (options: any = {}): Promise<IStatus> => {
+      const { result } = await postRequest('range/day', token, null, { host, ...options });
+      return result;
+    },
+    transact: async (events: IEvent[], uuid: string, options: any = {}): Promise<boolean> => {
+      await patchRequest(`range/day/${uuid}`, token, { events }, { host, ...options });
+      return true;
     },
   };
 };
