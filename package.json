@@ -1,7 +1,7 @@
 {
-  "name": "tenzing-client",
+  "name": "tendzin",
   "version": "1.0.0",
-  "description": "Client for tenzing",
+  "description": "Client for Tendzin",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
