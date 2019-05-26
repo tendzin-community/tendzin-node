@@ -25,10 +25,10 @@ interface GetClient {
     node?: string;
 }
 declare const _default: ({ token, node }?: GetClient) => {
-    transact: (events: Event[], uuid: string, transactionId?: string | undefined) => Promise<boolean>;
-    spawn: () => Promise<Status>;
-    getInventory: (uuid: string) => Promise<Inventory[]>;
-    getContiguousInventory: (uuid: string) => Promise<ContiguousInventory[]>;
-    getStatus: (uuid: string) => Promise<Status>;
+    transact: (events: Event[], uuid: string, options?: any) => Promise<boolean>;
+    spawn: (options?: any) => Promise<Status>;
+    getInventory: (uuid: string, options?: any) => Promise<Inventory[]>;
+    getContiguousInventory: (uuid: string, options?: any) => Promise<ContiguousInventory[]>;
+    getStatus: (uuid: string, options?: any) => Promise<Status>;
 };
 export = _default;

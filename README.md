@@ -43,7 +43,9 @@ Transaction ids are also supported to make you requests idempotent:
 ```js
 var id = 'c360e637-683f-4198-9c39-e73e81bbe232'
 
-var trx = '48809764-57df-4858-bfc9-83207380714d'
+var headers = {
+  'tendzin-transaction-id': '48809764-57df-4858-bfc9-83207380714d'
+}
 
 var events = [
   {
@@ -57,14 +59,14 @@ var events = [
   }
 ]
 
-client.transact(events, id, trx).catch(function(error) {
+client.transact(events, id, { headers: headers }).catch(function(error) {
   console.log(error)
 })
 ```
 
 ### Get inventory
 
-```
+```js
 client.getInventory(id).then(function(inventory) {
   console.log(inventory)
 })
@@ -72,7 +74,7 @@ client.getInventory(id).then(function(inventory) {
 
 ### Get contiguous inventory
 
-```
+```js
 client.getContiguousInventory(id).then(function(contiguousInventory) {
   console.log(contiguousInventory)
 })

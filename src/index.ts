@@ -146,10 +146,6 @@ function getRequest(path: string, token: string, options: any) {
   return request(path, mergeOptions(options, token, null, 'get'));
 }
 
-function fqdn(node: string): string {
-  return `${node}.tendzin.com`;
-}
-
 export = function({ token, node }: GetClient = {}) {
   if (!token) {
     throw new TendzinClientError(
@@ -161,36 +157,27 @@ export = function({ token, node }: GetClient = {}) {
     throw new TendzinClientError(`missing property "node", try "sydney', "los-angeles" or "london" for example`);
   }
 
+  const host = `${node}.tendzin.com`;
+
   return {
-    transact: async (events: Event[], uuid: string, transactionId?: string): Promise<boolean> => {
-      const options = {
-        host: fqdn(node),
-        headers: {},
-      };
-
-      if (transactionId) {
-        options.headers = {
-          'tendzin-transaction-id': transactionId,
-        };
-      }
-
-      await patchRequest(`range/day/${uuid}`, token, { events }, options);
+    transact: async (events: Event[], uuid: string, options: any = {}): Promise<boolean> => {
+      await patchRequest(`range/day/${uuid}`, token, { events }, { host, ...options });
       return true;
     },
-    spawn: async (): Promise<Status> => {
-      const { result } = await postRequest('range/day', token, null, { host: fqdn(node) });
+    spawn: async (options: any = {}): Promise<Status> => {
+      const { result } = await postRequest('range/day', token, null, { host, ...options });
       return result;
     },
-    getInventory: async (uuid: string): Promise<Inventory[]> => {
-      const { result } = await getRequest(`range/day/${uuid}/inventories`, token, { host: fqdn(node) });
+    getInventory: async (uuid: string, options: any = {}): Promise<Inventory[]> => {
+      const { result } = await getRequest(`range/day/${uuid}/inventories`, token, { host, ...options });
       return result;
     },
-    getContiguousInventory: async (uuid: string): Promise<ContiguousInventory[]> => {
-      const { result } = await getRequest(`range/day/${uuid}/contiguous-inventories`, token, { host: fqdn(node) });
+    getContiguousInventory: async (uuid: string, options: any = {}): Promise<ContiguousInventory[]> => {
+      const { result } = await getRequest(`range/day/${uuid}/contiguous-inventories`, token, { host, ...options });
       return result;
     },
-    getStatus: async (uuid: string): Promise<Status> => {
-      const { result } = await getRequest(`range/day/${uuid}`, token, { host: fqdn(node) });
+    getStatus: async (uuid: string, options: any = {}): Promise<Status> => {
+      const { result } = await getRequest(`range/day/${uuid}`, token, { host, ...options });
       return result;
     },
   };
