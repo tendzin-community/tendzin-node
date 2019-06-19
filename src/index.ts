@@ -1,48 +1,19 @@
 import fetch, { Response } from 'node-fetch';
 import { Headers } from 'node-fetch';
+import { format } from 'url';
 
 import TendzinClientError from './TendzinClientError';
 import TendzinClientRequestError from './TendzinClientRequestError';
-
-interface IRange {
-  readonly upper: string;
-  readonly lower: string;
-}
-
-interface IEvent {
-  readonly range: IRange;
-  readonly delta: number;
-  readonly operation: string;
-  readonly column: string;
-}
-
-interface IInventory {
-  readonly range: IRange;
-  readonly count: number;
-  readonly total: number;
-}
-
-interface IContiguousInventory {
-  readonly inventories: IInventory[];
-}
-
-interface IStatus {
-  readonly id: string;
-  readonly uptime: number;
-}
-
-interface IRequestOptions {
-  host: string;
-  protocol: string;
-  headers: any;
-  body?: string;
-  method: string;
-}
-
-interface IGetClient {
-  token?: string;
-  node?: string;
-}
+import {
+  ContiguousInventory,
+  Event,
+  GetClient,
+  Inventory,
+  Range,
+  RequestOptions,
+  Status,
+  TendzinClient,
+} from './types';
 
 const Accept = 'application/json';
 
@@ -66,8 +37,14 @@ function isJSONResponse(response: Response): boolean {
   return true;
 }
 
-async function request(path: string, options: IRequestOptions): Promise<any> {
-  const url = `${options.protocol}://${options.host}/${path}`;
+async function request(path: string, options: RequestOptions): Promise<any> {
+  const url = format({
+    hostname: options.host,
+    pathname: path,
+    protocol: options.protocol,
+    query: options.query,
+  });
+
   const response = await fetch(url, { headers: options.headers, body: options.body, method: options.method });
 
   const isJSON = isJSONResponse(response);
@@ -98,8 +75,8 @@ function headers(token: string) {
   };
 }
 
-function mergeOptions(options: any, token: string, data: any, method: string): IRequestOptions {
-  const newOptions: IRequestOptions = {
+function mergeOptions(options: any, token: string, data: any, method: string): RequestOptions {
+  const newOptions: RequestOptions = {
     host: 'sydney.tendzin.com',
     method,
     protocol: 'https',
@@ -117,19 +94,19 @@ function mergeOptions(options: any, token: string, data: any, method: string): I
   return newOptions;
 }
 
-function postRequest(path: string, token: string, data: any, options: any) {
+function postRequest(path: string, token: string, data: any, options: RequestOptions) {
   return request(path, mergeOptions(options, token, data, 'post'));
 }
 
-function patchRequest(path: string, token: string, data: any, options: any) {
+function patchRequest(path: string, token: string, data: any, options: RequestOptions) {
   return request(path, mergeOptions(options, token, data, 'patch'));
 }
 
-function getRequest(path: string, token: string, options: any) {
+function getRequest(path: string, token: string, options: RequestOptions) {
   return request(path, mergeOptions(options, token, null, 'get'));
 }
 
-export = ({ token, node }: IGetClient = {}) => {
+export = function getClient({ token, node }: GetClient = {}): TendzinClient {
   if (!token) {
     throw new TendzinClientError(
       `missing property "token", login at tendzin.com and issue a token for node you wish to use`,
@@ -143,23 +120,23 @@ export = ({ token, node }: IGetClient = {}) => {
   const host = `${node}.tendzin.com`;
 
   return {
-    getContiguousInventory: async (uuid: string, options: any = {}): Promise<IContiguousInventory[]> => {
+    getContiguousInventory: async (uuid, options = {}) => {
       const { result } = await getRequest(`range/day/${uuid}/contiguous-inventories`, token, { host, ...options });
       return result;
     },
-    getInventory: async (uuid: string, options: any = {}): Promise<IInventory[]> => {
+    getInventory: async (uuid, options = {}) => {
       const { result } = await getRequest(`range/day/${uuid}/inventories`, token, { host, ...options });
       return result;
     },
-    getStatus: async (uuid: string, options: any = {}): Promise<IStatus> => {
+    getStatus: async (uuid, options = {}) => {
       const { result } = await getRequest(`range/day/${uuid}`, token, { host, ...options });
       return result;
     },
-    spawn: async (options: any = {}): Promise<IStatus> => {
+    spawn: async (options = {}) => {
       const { result } = await postRequest('range/day', token, null, { host, ...options });
       return result;
     },
-    transact: async (events: IEvent[], uuid: string, options: any = {}): Promise<boolean> => {
+    transact: async (events, uuid, options = {}) => {
       await patchRequest(`range/day/${uuid}`, token, { events }, { host, ...options });
       return true;
     },
