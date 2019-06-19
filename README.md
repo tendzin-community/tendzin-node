@@ -6,13 +6,60 @@ Node client for interacting with Tendzin.
 npm install tendzin
 ```
 
-### Creating a client
+## Creating a client
 
 To get a token log into tendzin.com and issue one for the relevant node:
 
 ```js
 var client = require('tendzin')({ token: process.env.TOKEN, node: 'sydney' });
 ```
+
+## Modules
+
+### Calendar Module
+
+The Calendar Module provides an API for generating a calendar for use in app.
+
+* `months` is the amount of months you would like to be generated.
+* use `offset` for pagination.
+* `nights` are the number of nights you would like to stay.
+
+```js
+var client = require('tendzin')({ token: process.env.TOKEN, node: 'sydney' });
+
+var calendar = require('tendzin/modules/calendar');
+
+calendar.search(client, {
+  id: 'c360e637-683f-4198-9c39-e73e81bbe232',
+  months: 1,
+  offset: 0,
+  nights: 1
+}).then(function(days) {
+  console.log(days)
+});
+```
+
+This this example would return this:
+
+```js
+[
+  {
+    "availableForCheckIn": false,
+    "checkIn": "2019-05-31",
+    "checkOut": "2019-06-01",
+    "lastNight": "2019-05-31"
+  },
+  {
+    "availableForCheckIn": false,
+    "checkIn": "2019-06-01",
+    "checkOut": "2019-06-02",
+    "lastNight": "2019-06-01"
+  }
+  // ....
+]
+```
+
+## Using Client Directly
 
 ### Transact with a compute unit
 
@@ -38,7 +85,7 @@ client.transact(events, id).catch(function(error) {
 })
 ```
 
-Transaction ids are also supported to make you requests idempotent:
+Transaction ids are also supported to make your requests idempotent:
 
 ```js
 var id = 'c360e637-683f-4198-9c39-e73e81bbe232'
