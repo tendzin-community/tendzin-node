@@ -25,17 +25,11 @@ The Calendar Module provides an API for generating a calendar for use in app.
 * `nights` are the number of nights you would like to stay.
 
 ```js
-var client = require('tendzin')({ token: process.env.TOKEN, node: 'sydney' });
-
-var calendar = require('tendzin/modules/calendar');
-
 calendar.search(client, {
   id: 'c360e637-683f-4198-9c39-e73e81bbe232',
   months: 1,
   offset: 0,
   nights: 1
-}).then(function(days) {
-  console.log(days)
 });
 ```
 
@@ -66,8 +60,50 @@ calendar.isAvailable(client, {
   id: 'c360e637-683f-4198-9c39-e73e81bbe232',
   checkIn: "2019-05-01",
   nights: 2
-}).then(function(isAvailable) {
-  console.log(isAvailable)
+});
+```
+
+### Reservation Module
+
+Using a transaction key is optional but recommended as it will make your
+requests idempotent and prevent any double booking.
+
+Create:
+
+```js
+reservation.create(client, {
+  id: 'c360e637-683f-4198-9c39-e73e81bbe232',
+  transactionKey: '921e1804-b841-480b-b237-67076490accd',
+  checkIn: "2019-05-01",
+  nights: 2,
+});
+```
+
+Cancel:
+
+```js
+reservation.cancel(client, {
+  id: 'c360e637-683f-4198-9c39-e73e81bbe232',
+  transactionKey: '23cc2540-21f7-459a-ad0e-48401e4ea415',
+  checkIn: "2019-05-01",
+  nights: 2
+});
+```
+
+Modify:
+
+```js
+reservation.modify(client, {
+  id: 'c360e637-683f-4198-9c39-e73e81bbe232',
+  transactionKey: '3130b91d-1f36-4964-8895-61aca8495449',
+  from: {
+    checkIn: "2019-05-01",
+    nights: 2
+  },
+  to: {
+    checkIn: "2019-05-01",
+    nights: 4
+  }
 });
 ```
 
@@ -92,9 +128,7 @@ var events = [
   }
 ]
 
-client.transact(events, id).catch(function(error) {
-  console.log(error)
-})
+client.transact(events, id)
 ```
 
 Transaction ids are also supported to make your requests idempotent:
@@ -118,31 +152,23 @@ var events = [
   }
 ]
 
-client.transact(events, id, { headers: headers }).catch(function(error) {
-  console.log(error)
-})
+client.transact(events, id, { headers: headers });
 ```
 
 ### Get inventory
 
 ```js
-client.getInventory(id).then(function(inventory) {
-  console.log(inventory)
-})
+client.getInventory(id);
 ```
 
 ### Get contiguous inventory
 
 ```js
-client.getContiguousInventory(id).then(function(contiguousInventory) {
-  console.log(contiguousInventory)
-})
+client.getContiguousInventory(id);
 ```
 
 ### Create a new compute unit
 
 ```js
-client.spawn().then(function(status) {
-  console.log(status.id)
-})
+client.spawn();
 ```

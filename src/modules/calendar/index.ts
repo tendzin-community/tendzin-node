@@ -1,5 +1,5 @@
 import { ContiguousInventory, Range, TendzinClient } from '../../types';
-import { addDay, addDays, formatDate, getFirstDate, getLastDate, getToday, subtractDay } from '../../util';
+import { addDay, addDays, checkInAndNightsToDates, formatDate, getFirstDate, getLastDate, getToday, subtractDay } from '../../util';
 import { CalendarSearchOptions, CalendarSearchResult, IsAvailableQuery } from './types';
 
 function inRange(date: Date, range: Range) {
@@ -44,14 +44,15 @@ function checkInDetails(contiguousInventories: ContiguousInventory[], checkInDat
 }
 
 export async function isAvailable(client: TendzinClient, options: IsAvailableQuery): Promise<boolean> {
-  const checkIn = options.checkIn
-  const checkInDate = new Date(checkIn)
-  const lastNightDate = addDays(checkInDate, options.nights - 1);
+  const { checkInDate, lastNightDate } = checkInAndNightsToDates(
+    options.checkIn,
+    options.nights
+  )
 
   const contiguousInventories = await client.getContiguousInventory(options.id, {
     query: {
       'total-minus-count-gt': 0,
-      'upper-range-gte': checkIn
+      'upper-range-gte': formatDate(checkInDate)
     },
   });
 
