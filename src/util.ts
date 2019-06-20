@@ -36,3 +36,9 @@ export function getLastDate(date: Date, offset: number): Date {
 export function getToday(): Date {
   return zeroHours(new Date());
 }
+
+export function checkInAndNightsToDates(checkIn: string, nights: number) {
+  const checkInDate = new Date(checkIn)
+  const lastNightDate = addDays(checkInDate, nights - 1);
+  return { checkInDate, lastNightDate }
+}

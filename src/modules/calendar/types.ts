@@ -12,3 +12,9 @@ export interface CalendarSearchResult {
   lastNight: string;
   availableForCheckIn: boolean;
 }
+
+export interface IsAvailableQuery {
+  id: string;
+  checkIn: string
+  nights: number
+}

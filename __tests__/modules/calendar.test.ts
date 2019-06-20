@@ -40,3 +40,35 @@ test('should return two check in dates', async () => {
 
   expect(subject).toEqual(2)
 });
+
+test('check if dates are available for check in', async () => {
+  const todayDate = getToday();
+
+  const upper = formatDate(addDays(todayDate, 2))
+  const lower = formatDate(todayDate)
+
+  const inventory = {
+    range: {
+      upper,
+      lower
+    },
+    count: 0,
+    total: 1
+  }
+
+  client.__setContiguousInventory([
+    {
+      inventories: [
+        inventory
+      ]
+    }
+  ]);
+
+  const subject = await calendar.isAvailable(client, {
+    id: uuid1(),
+    checkIn: lower,
+    nights: 2
+  })
+
+  expect(subject).toEqual(true)
+});
