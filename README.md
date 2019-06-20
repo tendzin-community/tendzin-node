@@ -20,6 +20,10 @@ var client = require('tendzin')({ token: process.env.TOKEN, node: 'sydney' });
 
 The Calendar Module provides an API for generating a calendar for use in app.
 
+```js
+var calendar = require('tendzin/modules/calendar');
+```
+
 * `months` is the amount of months you would like to be generated.
 * use `offset` for pagination.
 * `nights` are the number of nights you would like to stay.
@@ -67,6 +71,10 @@ calendar.isAvailable(client, {
 
 Using a transaction key is optional but recommended as it will make your
 requests idempotent and prevent any double booking.
+
+```js
+var calendar = require('tendzin/modules/reservation');
+```
 
 Create:
 
