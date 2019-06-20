@@ -59,6 +59,18 @@ This this example would return this:
 ]
 ```
 
+If you want to enquire if a particular date is available for check in:
+
+```js
+calendar.isAvailable(client, {
+  id: 'c360e637-683f-4198-9c39-e73e81bbe232',
+  checkIn: "2019-05-01",
+  nights: 2
+}).then(function(isAvailable) {
+  console.log(isAvailable)
+});
+```
+
 ## Using Client Directly
 
 ### Transact with a compute unit
