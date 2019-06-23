@@ -15,6 +15,6 @@ export interface CalendarSearchResult {
 
 export interface IsAvailableQuery {
   id: string;
-  checkIn: string
-  nights: number
+  checkIn: string;
+  nights: number;
 }

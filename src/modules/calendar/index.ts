@@ -1,5 +1,14 @@
 import { ContiguousInventory, Range, TendzinClient } from '../../types';
-import { addDay, addDays, checkInAndNightsToDates, formatDate, getFirstDate, getLastDate, getToday, subtractDay } from '../../util';
+import {
+  addDay,
+  addDays,
+  checkInAndNightsToDates,
+  formatDate,
+  getFirstDate,
+  getLastDate,
+  getToday,
+  subtractDay,
+} from '../../util';
 import { CalendarSearchOptions, CalendarSearchResult, IsAvailableQuery } from './types';
 
 function inRange(date: Date, range: Range) {
@@ -10,7 +19,11 @@ function containing(checkInDate: Date, lastNightDate: Date, range: Range) {
   return inRange(checkInDate, range) && inRange(lastNightDate, range);
 }
 
-function containedInContiguousInventory(checkInDate: Date, lastNightDate: Date, contiguousInventories: ContiguousInventory[]) {
+function containedInContiguousInventory(
+  checkInDate: Date,
+  lastNightDate: Date,
+  contiguousInventories: ContiguousInventory[],
+) {
   return !!contiguousInventories.find(group => {
     const inventories = group.inventories;
     return containing(checkInDate, lastNightDate, {
@@ -44,19 +57,16 @@ function checkInDetails(contiguousInventories: ContiguousInventory[], checkInDat
 }
 
 export async function isAvailable(client: TendzinClient, options: IsAvailableQuery): Promise<boolean> {
-  const { checkInDate, lastNightDate } = checkInAndNightsToDates(
-    options.checkIn,
-    options.nights
-  )
+  const { checkInDate, lastNightDate } = checkInAndNightsToDates(options.checkIn, options.nights);
 
   const contiguousInventories = await client.getContiguousInventory(options.id, {
     query: {
       'total-minus-count-gt': 0,
-      'upper-range-gte': formatDate(checkInDate)
+      'upper-range-gte': formatDate(checkInDate),
     },
   });
 
-  return containedInContiguousInventory(checkInDate, lastNightDate, contiguousInventories)
+  return containedInContiguousInventory(checkInDate, lastNightDate, contiguousInventories);
 }
 
 export async function search(client: TendzinClient, options: CalendarSearchOptions): Promise<CalendarSearchResult[]> {

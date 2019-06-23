@@ -38,7 +38,7 @@ export function getToday(): Date {
 }
 
 export function checkInAndNightsToDates(checkIn: string, nights: number) {
-  const checkInDate = new Date(checkIn)
+  const checkInDate = new Date(checkIn);
   const lastNightDate = addDays(checkInDate, nights - 1);
-  return { checkInDate, lastNightDate }
+  return { checkInDate, lastNightDate };
 }
