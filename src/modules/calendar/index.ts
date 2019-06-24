@@ -12,7 +12,7 @@ import {
 import { CalendarSearchOptions, CalendarSearchResult, IsAvailableQuery } from './types';
 
 function inRange(date: Date, range: Range) {
-  return date >= new Date(range.lower) && date <= subtractDay(new Date(range.upper));
+  return date >= new Date(range.lower) && date <= new Date(range.upper);
 }
 
 function containing(checkInDate: Date, lastNightDate: Date, range: Range) {
@@ -75,8 +75,8 @@ export async function search(client: TendzinClient, options: CalendarSearchOptio
   const nights = options.nights || 1;
 
   const todayDate = getToday();
-  const firstDate = getFirstDate(todayDate, offset, months);
-  const lastDate = getLastDate(todayDate, offset);
+  const firstDate = getFirstDate(todayDate, offset);
+  const lastDate = getLastDate(todayDate, offset, months);
 
   const dates = getDates(firstDate, lastDate);
 
