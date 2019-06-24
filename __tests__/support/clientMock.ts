@@ -20,7 +20,7 @@ interface MockTendzinClient extends TendzinClient {
   __setStatus: (status: Status) => void
 }
 
-export = function getClient({ token, node }: GetClient = {}): MockTendzinClient {
+export function getClient({ token, node }: GetClient = {}): MockTendzinClient {
   if (!token) {
     throw new TendzinClientError(
       `missing property "token", login at tendzin.com and issue a token for node you wish to use`,

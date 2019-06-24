@@ -11,7 +11,8 @@ npm install tendzin
 To get a token log into tendzin.com and issue one for the relevant node:
 
 ```js
-var client = require('tendzin')({ token: process.env.TOKEN, node: 'sydney' });
+var tendzin = require('tendzin');
+var client = tendzin.getClient({ token: process.env.TOKEN, node: 'sydney' });
 ```
 
 ## Modules
@@ -20,16 +21,12 @@ var client = require('tendzin')({ token: process.env.TOKEN, node: 'sydney' });
 
 The Calendar Module provides an API for generating a calendar for use in app.
 
-```js
-var calendar = require('tendzin/modules/calendar');
-```
-
 * `months` is the amount of months you would like to be generated.
 * use `offset` for pagination.
 * `nights` are the number of nights you would like to stay.
 
 ```js
-calendar.search(client, {
+tendzin.calendar.search(client, {
   id: 'c360e637-683f-4198-9c39-e73e81bbe232',
   months: 1,
   offset: 0,
@@ -60,7 +57,7 @@ This this example would return this:
 If you want to enquire if a particular date is available for check in:
 
 ```js
-calendar.isAvailable(client, {
+tendzin.calendar.isAvailable(client, {
   id: 'c360e637-683f-4198-9c39-e73e81bbe232',
   checkIn: "2019-05-01",
   nights: 2
@@ -72,14 +69,10 @@ calendar.isAvailable(client, {
 Using a transaction key is optional but recommended as it will make your
 requests idempotent and prevent any double booking.
 
-```js
-var calendar = require('tendzin/modules/reservation');
-```
-
 Create:
 
 ```js
-reservation.create(client, {
+tendzin.reservation.create(client, {
   id: 'c360e637-683f-4198-9c39-e73e81bbe232',
   transactionKey: '921e1804-b841-480b-b237-67076490accd',
   checkIn: "2019-05-01",
@@ -90,7 +83,7 @@ reservation.create(client, {
 Cancel:
 
 ```js
-reservation.cancel(client, {
+tendzin.reservation.cancel(client, {
   id: 'c360e637-683f-4198-9c39-e73e81bbe232',
   transactionKey: '23cc2540-21f7-459a-ad0e-48401e4ea415',
   checkIn: "2019-05-01",
@@ -101,7 +94,7 @@ reservation.cancel(client, {
 Modify:
 
 ```js
-reservation.modify(client, {
+tendzin.reservation.modify(client, {
   id: 'c360e637-683f-4198-9c39-e73e81bbe232',
   transactionKey: '3130b91d-1f36-4964-8895-61aca8495449',
   from: {

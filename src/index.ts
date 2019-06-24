@@ -15,6 +15,12 @@ import {
   TendzinClient,
 } from './types';
 
+import * as calendar from './modules/calendar';
+export { calendar };
+
+import * as reservation from './modules/reservation';
+export { reservation };
+
 const Accept = 'application/json';
 
 const ContentType = 'application/json';
@@ -106,7 +112,7 @@ function getRequest(path: string, token: string, options: RequestOptions) {
   return request(path, mergeOptions(options, token, null, 'get'));
 }
 
-export = function getClient({ token, node }: GetClient = {}): TendzinClient {
+export function getClient({ token, node }: GetClient = {}): TendzinClient {
   if (!token) {
     throw new TendzinClientError(
       `missing property "token", login at tendzin.com and issue a token for node you wish to use`,
@@ -141,4 +147,4 @@ export = function getClient({ token, node }: GetClient = {}): TendzinClient {
       return true;
     },
   };
-};
+}
