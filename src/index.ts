@@ -21,6 +21,9 @@ export { calendar };
 import * as reservation from './modules/reservation';
 export { reservation };
 
+import * as inventory from './modules/inventory';
+export { inventory };
+
 const Accept = 'application/json';
 
 const ContentType = 'application/json';
