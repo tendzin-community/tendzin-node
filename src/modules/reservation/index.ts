@@ -4,7 +4,6 @@ import { CancelReservationOptions, CreateReservationOptions, ModifyReservationOp
 
 export function create(client: TendzinClient, options: CreateReservationOptions): Promise<boolean> {
   const id = options.id;
-
   const headers: any = {};
 
   if (options.transactionKey) {
@@ -25,7 +24,7 @@ export function create(client: TendzinClient, options: CreateReservationOptions)
     },
   ];
 
-  return client.transact(events, id, { headers });
+  return client.transact(events, id, 'day', { headers });
 }
 
 export async function cancel(client: TendzinClient, options: CancelReservationOptions): Promise<boolean> {
@@ -51,7 +50,7 @@ export async function cancel(client: TendzinClient, options: CancelReservationOp
     },
   ];
 
-  return client.transact(events, id, { headers });
+  return client.transact(events, id, 'day', { headers });
 }
 
 export async function modify(client: TendzinClient, options: ModifyReservationOptions): Promise<boolean> {
@@ -94,5 +93,5 @@ export async function modify(client: TendzinClient, options: ModifyReservationOp
     },
   ];
 
-  return client.transact(events, id, { headers });
+  return client.transact(events, id, 'day', { headers });
 }

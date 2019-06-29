@@ -129,24 +129,24 @@ export function getClient({ token, node }: GetClient = {}): TendzinClient {
   const host = `${node}.tendzin.com`;
 
   return {
-    getContiguousInventory: async (uuid, options = {}) => {
-      const { result } = await getRequest(`range/day/${uuid}/contiguous-inventories`, token, { host, ...options });
+    getContiguousInventory: async (uuid, unit, options = {}) => {
+      const { result } = await getRequest(`range/${unit}/${uuid}/contiguous-inventories`, token, { host, ...options });
       return result;
     },
-    getInventory: async (uuid, options = {}) => {
-      const { result } = await getRequest(`range/day/${uuid}/inventories`, token, { host, ...options });
+    getInventory: async (uuid, unit, options = {}) => {
+      const { result } = await getRequest(`range/${unit}/${uuid}/inventories`, token, { host, ...options });
       return result;
     },
-    getStatus: async (uuid, options = {}) => {
-      const { result } = await getRequest(`range/day/${uuid}`, token, { host, ...options });
+    getStatus: async (uuid, unit, options = {}) => {
+      const { result } = await getRequest(`range/${unit}/${uuid}`, token, { host, ...options });
       return result;
     },
-    spawn: async (options = {}) => {
-      const { result } = await postRequest('range/day', token, null, { host, ...options });
+    spawn: async (unit, options = {}) => {
+      const { result } = await postRequest(`range/${unit}`, token, null, { host, ...options });
       return result;
     },
-    transact: async (events, uuid, options = {}) => {
-      await patchRequest(`range/day/${uuid}`, token, { events }, { host, ...options });
+    transact: async (events, uuid, unit, options = {}) => {
+      await patchRequest(`range/${unit}/${uuid}`, token, { events }, { host, ...options });
       return true;
     },
   };

@@ -4,6 +4,7 @@ import { UpdateTotalAvailableOptions } from './types';
 
 export function updateTotalAvailable(client: TendzinClient, options: UpdateTotalAvailableOptions) {
   const id = options.id;
+  const unit = options.unit || 'day';
 
   const headers: any = {};
 
@@ -23,5 +24,5 @@ export function updateTotalAvailable(client: TendzinClient, options: UpdateTotal
     },
   ];
 
-  return client.transact(events, id, { headers });
+  return client.transact(events, id, unit, { headers });
 }

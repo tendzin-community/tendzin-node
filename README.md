@@ -141,7 +141,7 @@ var events = [
   }
 ]
 
-client.transact(events, id)
+client.transact(events, id, 'day')
 ```
 
 Transaction ids are also supported to make your requests idempotent:
@@ -165,23 +165,23 @@ var events = [
   }
 ]
 
-client.transact(events, id, { headers: headers });
+client.transact(events, id, 'day', { headers: headers });
 ```
 
 ### Get inventory
 
 ```js
-client.getInventory(id);
+client.getInventory(id, 'day');
 ```
 
 ### Get contiguous inventory
 
 ```js
-client.getContiguousInventory(id);
+client.getContiguousInventory(id, 'day');
 ```
 
 ### Create a new compute unit
 
 ```js
-client.spawn();
+client.spawn('day');
 ```

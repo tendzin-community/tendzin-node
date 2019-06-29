@@ -4,4 +4,5 @@ export interface UpdateTotalAvailableOptions {
   start: string;
   end: string;
   total: number;
+  unit?: string;
 }

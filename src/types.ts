@@ -13,11 +13,11 @@ export interface GetClient {
 }
 
 export interface TendzinClient {
-  getContiguousInventory: (uuid: string, options: any) => Promise<ContiguousInventory[]>;
-  getInventory: (uuid: string, options: any) => Promise<Inventory[]>;
-  getStatus: (uuid: string, options: any) => Promise<Status>;
-  spawn: (options?: any) => Promise<Status>;
-  transact: (events: Event[], uuid: string, options: any) => Promise<boolean>;
+  getContiguousInventory: (uuid: string, unit: string, options: any) => Promise<ContiguousInventory[]>;
+  getInventory: (uuid: string, unit: string, options: any) => Promise<Inventory[]>;
+  getStatus: (uuid: string, unit: string, options: any) => Promise<Status>;
+  spawn: (unit: string, options?: any) => Promise<Status>;
+  transact: (events: Event[], uuid: string, unit: string, options: any) => Promise<boolean>;
 }
 
 export interface Range {

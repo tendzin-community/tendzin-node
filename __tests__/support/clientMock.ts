@@ -32,31 +32,31 @@ export function getClient({ token, node }: GetClient = {}): MockTendzinClient {
   }
 
   return {
-    getContiguousInventory: async (uuid, options = {}) => {
+    getContiguousInventory: async (uuid, unit, options = {}) => {
       return __contiguousInventory
     },
     __setContiguousInventory: (contiguousInventory) => {
       __contiguousInventory = contiguousInventory
     },
-    getInventory: async (uuid, options = {}) => {
+    getInventory: async (uuid, unit, options = {}) => {
       return __inventory
     },
     __setInventory: (inventory) => {
       __inventory = inventory
     },
-    getStatus: async (uuid, options = {}) => {
+    getStatus: async (uuid, unit, options = {}) => {
       return __status
     },
     __setStatus: (status) => {
       __status = status
     },
-    spawn: async (options = {}) => {
+    spawn: async (unit, options = {}) => {
       return {
         id: uuid1(),
         uptime: 0
       };
     },
-    transact: async (events, uuid, options = {}) => {
+    transact: async (events, uuid, unit, options = {}) => {
       return true;
     },
   };
