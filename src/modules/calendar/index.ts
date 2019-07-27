@@ -59,7 +59,7 @@ function checkInDetails(contiguousInventories: ContiguousInventory[], checkInDat
 export async function isAvailable(client: TendzinClient, options: IsAvailableQuery): Promise<boolean> {
   const { checkInDate, lastNightDate } = checkInAndNightsToDates(options.checkIn, options.nights);
 
-  const contiguousInventories = await client.getContiguousInventory(options.id, {
+  const contiguousInventories = await client.getContiguousInventory(options.id, 'day', {
     query: {
       'total-minus-count-gt': 0,
       'upper-range-gte': formatDate(checkInDate),
@@ -80,7 +80,7 @@ export async function search(client: TendzinClient, options: CalendarSearchOptio
 
   const dates = getDates(firstDate, lastDate);
 
-  const contiguousInventories = await client.getContiguousInventory(options.id, {
+  const contiguousInventories = await client.getContiguousInventory(options.id, 'day', {
     query: {
       'total-minus-count-gt': 0,
       'upper-range-gte': formatDate(todayDate),
