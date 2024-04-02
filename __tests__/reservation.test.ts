@@ -1,8 +1,8 @@
 import uuid1 from 'uuid/v1';
 
-import { getClient } from '../support/clientMock';
-import * as reservation from '../../src/modules/reservation';
-import { formatDate, addDays, getToday } from '../../src/util';
+import { getClient } from './support/clientMock';
+import * as reservation from '../src/reservation';
+import { formatDate, addDays, getToday } from '../src/util';
 
 describe('reservation', () => {
   const client = getClient({
@@ -13,8 +13,8 @@ describe('reservation', () => {
   test('should create a reservation', async () => {
     const subject = await reservation.create(client, {
       id: uuid1(),
-      checkIn: "2020-01-01",
-      nights: 1
+      start: "2020-01-01",
+      end: "2020-01-01",
     })
 
     expect(subject).toEqual(true)
@@ -24,8 +24,8 @@ describe('reservation', () => {
     const subject = await reservation.create(client, {
       id: uuid1(),
       transactionKey: uuid1(),
-      checkIn: "2020-01-01",
-      nights: 1
+      start: "2020-01-01",
+      end: "2020-01-01",
     })
 
     expect(subject).toEqual(true)
@@ -34,8 +34,8 @@ describe('reservation', () => {
   test('should cancel a reservation', async () => {
     const subject = await reservation.cancel(client, {
       id: uuid1(),
-      checkIn: "2020-01-01",
-      nights: 1
+      start: "2020-01-01",
+      end: "2020-01-01",
     })
 
     expect(subject).toEqual(true)
@@ -45,12 +45,12 @@ describe('reservation', () => {
     const subject = await reservation.modify(client, {
       id: uuid1(),
       from: {
-        checkIn: "2020-01-01",
-        nights: 1
+        start: "2020-01-01",
+        end: "2020-01-01",
       },
       to: {
-        checkIn: "2020-01-02",
-        nights: 2
+        start: "2020-01-02",
+        end: "2020-01-03",
       }
     })
 

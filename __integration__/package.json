@@ -2,13 +2,14 @@
   "name": "integration",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "index.js"
+    "test": "ts-node index.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "tendzin": "file:../"
+    "tendzin": "file:../",
+    "ts-node": "^10.9.2"
   }
 }

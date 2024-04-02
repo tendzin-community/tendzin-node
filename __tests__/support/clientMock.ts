@@ -1,9 +1,6 @@
 import uuid1 from 'uuid/v1';
 
-import { TendzinClient, Range, Event, Inventory, ContiguousInventory, Status, GetClient } from '../../src/types';
-
-import TendzinClientError from '../../src/TendzinClientError';
-import TendzinClientRequestError from '../../src/TendzinClientRequestError';
+import { TendzinClient, Range, Event, Inventory, ContiguousInventory, Status, GetClient, TendzinClientError, TendzinClientRequestError } from '../../src';
 
 let __contiguousInventory: ContiguousInventory[] = []
 

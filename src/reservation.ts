@@ -1,6 +1,23 @@
-import { TendzinClient } from '../../types';
-import { addDays, checkInAndNightsToDates, formatDate } from '../../util';
-import { CancelReservationOptions, CreateReservationOptions, ModifyReservationOptions } from './types';
+import { TendzinClient } from './';
+
+interface RequestOptions {
+  id: string;
+  transactionKey?: string;
+}
+
+interface CheckInOptions {
+  start: string;
+  end: string;
+}
+
+export interface CreateReservationOptions extends RequestOptions, CheckInOptions {}
+
+export interface CancelReservationOptions extends RequestOptions, CheckInOptions {}
+
+export interface ModifyReservationOptions extends RequestOptions {
+  from: CheckInOptions;
+  to: CheckInOptions;
+}
 
 export function create(client: TendzinClient, options: CreateReservationOptions): Promise<boolean> {
   const id = options.id;
@@ -10,16 +27,14 @@ export function create(client: TendzinClient, options: CreateReservationOptions)
     headers['tendzin-transaction-id'] = options.transactionKey;
   }
 
-  const { checkInDate, lastNightDate } = checkInAndNightsToDates(options.checkIn, options.nights);
-
   const events = [
     {
       column: 'count',
       delta: 1,
       operation: 'increment',
       range: {
-        lower: formatDate(checkInDate),
-        upper: formatDate(lastNightDate),
+        lower: options.start,
+        upper: options.end,
       },
     },
   ];
@@ -36,16 +51,14 @@ export async function cancel(client: TendzinClient, options: CancelReservationOp
     headers['tendzin-transaction-id'] = options.transactionKey;
   }
 
-  const { checkInDate, lastNightDate } = checkInAndNightsToDates(options.checkIn, options.nights);
-
   const events = [
     {
       column: 'count',
       delta: 1,
       operation: 'decrement',
       range: {
-        lower: formatDate(checkInDate),
-        upper: formatDate(lastNightDate),
+        lower: options.start,
+        upper: options.end,
       },
     },
   ];
@@ -62,24 +75,14 @@ export async function modify(client: TendzinClient, options: ModifyReservationOp
     headers['tendzin-transaction-id'] = options.transactionKey;
   }
 
-  const { checkInDate: checkInDateFrom, lastNightDate: lastNightDateFrom } = checkInAndNightsToDates(
-    options.from.checkIn,
-    options.from.nights,
-  );
-
-  const { checkInDate: checkInDateTo, lastNightDate: lastNightDateTo } = checkInAndNightsToDates(
-    options.to.checkIn,
-    options.to.nights,
-  );
-
   const events = [
     {
       column: 'count',
       delta: 1,
       operation: 'decrement',
       range: {
-        lower: formatDate(checkInDateFrom),
-        upper: formatDate(lastNightDateFrom),
+        lower: options.from.start,
+        upper: options.from.end,
       },
     },
     {
@@ -87,8 +90,8 @@ export async function modify(client: TendzinClient, options: ModifyReservationOp
       delta: 1,
       operation: 'increment',
       range: {
-        lower: formatDate(checkInDateTo),
-        upper: formatDate(lastNightDateTo),
+        lower: options.to.start,
+        upper: options.to.end,
       },
     },
   ];

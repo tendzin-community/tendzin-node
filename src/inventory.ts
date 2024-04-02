@@ -1,10 +1,19 @@
-import { TendzinClient } from '../../types';
-import { formatDate } from '../../util';
-import { UpdateTotalAvailableOptions } from './types';
+import { TendzinClient } from './';
+import { formatDate } from './util';
 
-export function updateTotalAvailable(client: TendzinClient, options: UpdateTotalAvailableOptions) {
+export interface UpdateTotalAvailableOptions {
+  id: string;
+  transactionKey?: string;
+  start: string;
+  end: string;
+  total?: number;
+  unit?: string;
+}
+
+export function updateTotalAvailable(client: TendzinClient, options: UpdateTotalAvailableOptions): Promise<boolean> {
   const id = options.id;
   const unit = options.unit || 'day';
+  const delta = options.total || 1;
 
   const headers: any = {};
 
@@ -15,7 +24,7 @@ export function updateTotalAvailable(client: TendzinClient, options: UpdateTotal
   const events = [
     {
       column: 'total',
-      delta: options.total,
+      delta,
       operation: 'flatten',
       range: {
         lower: options.start,

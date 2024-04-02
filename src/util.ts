@@ -29,8 +29,8 @@ export function getToday(): Date {
   return new Date(formatDate(now));
 }
 
-export function checkInAndNightsToDates(checkIn: string, nights: number) {
-  const checkInDate = new Date(checkIn);
-  const lastNightDate = addDays(checkInDate, nights - 1);
-  return { checkInDate, lastNightDate };
+export function periodToDates(start: string, period: number): { startDate: Date; endDate: Date } {
+  const startDate = new Date(start);
+  const endDate = addDays(startDate, period - 1);
+  return { startDate, endDate };
 }

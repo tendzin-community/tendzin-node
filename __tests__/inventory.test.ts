@@ -1,7 +1,7 @@
 import uuid1 from 'uuid/v1';
 
-import { getClient } from '../support/clientMock';
-import * as inventory from '../../src/modules/inventory';
+import { getClient } from './support/clientMock';
+import * as inventory from '../src/inventory';
 
 describe('inventory', () => {
   const client = getClient({

@@ -1,8 +1,8 @@
 import uuid1 from 'uuid/v1';
 
-import { getClient } from '../support/clientMock';
-import * as calendar from '../../src/modules/calendar';
-import { formatDate, addDays, getToday } from '../../src/util';
+import { getClient } from './support/clientMock';
+import * as calendar from '../src/calendar';
+import { formatDate, addDays, getToday } from '../src/util';
 
 describe('calendar', () => {
   const client = getClient({
@@ -10,7 +10,7 @@ describe('calendar', () => {
     node: 'sydney'
   });
 
-  test('should return two check in dates', async () => {
+  test('should return two available dates', async () => {
     const todayDate = getToday();
 
     const inventory = {
@@ -34,10 +34,10 @@ describe('calendar', () => {
       id: uuid1(),
       months: 1,
       offset: 0,
-      nights: 2
+      period: 2
     })
 
-    const subject = result.filter(x => x.availableForCheckIn).length
+    const subject = result.filter(x => x.available).length
 
     expect(subject).toEqual(2)
   });
@@ -58,7 +58,7 @@ describe('calendar', () => {
     expect(subject).toBeLessThanOrEqual(366)
   });
 
-  test('check if dates are available for check in', async () => {
+  test('check if dates are available', async () => {
     const todayDate = getToday();
 
     const upper = formatDate(addDays(todayDate, 2))
@@ -83,8 +83,8 @@ describe('calendar', () => {
 
     const subject = await calendar.isAvailable(client, {
       id: uuid1(),
-      checkIn: lower,
-      nights: 2
+      start: lower,
+      end: upper,
     })
 
     expect(subject).toEqual(true)
