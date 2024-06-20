@@ -1,13 +1,17 @@
 import { TendzinClient } from './';
 import { formatDate } from './util';
 
-export interface UpdateTotalAvailableOptions {
-  id: string;
-  transactionKey?: string;
+export interface UpdateTotalAvailableRange {
   start: string;
   end: string;
+}
+
+export interface UpdateTotalAvailableOptions {
+  id: string;
+  ranges: UpdateTotalAvailableRange[];
   total?: number;
   unit?: string;
+  transactionKey?: string;
 }
 
 export function updateTotalAvailable(client: TendzinClient, options: UpdateTotalAvailableOptions): Promise<boolean> {
@@ -21,17 +25,15 @@ export function updateTotalAvailable(client: TendzinClient, options: UpdateTotal
     headers['tendzin-transaction-id'] = options.transactionKey;
   }
 
-  const events = [
-    {
-      column: 'total',
-      delta,
-      operation: 'flatten',
-      range: {
-        lower: options.start,
-        upper: options.end,
-      },
+  const events = options.ranges.map(range => ({
+    column: 'total',
+    delta,
+    operation: 'flatten',
+    range: {
+      lower: range.start,
+      upper: range.end,
     },
-  ];
+  }));
 
   return client.transact(events, id, unit, { headers });
 }

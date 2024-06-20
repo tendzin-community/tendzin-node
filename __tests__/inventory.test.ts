@@ -13,9 +13,13 @@ describe('inventory', () => {
     const subject = await inventory.updateTotalAvailable(client, {
       id: uuid1(),
       transactionKey: uuid1(),
-      start: "2019-05-01",
-      end: "2019-06-01",
-      total: 2
+      total: 2,
+      ranges: [
+        {
+          start: "2019-05-01",
+          end: "2019-06-01",
+        },
+      ],
     })
 
     expect(subject).toEqual(true)

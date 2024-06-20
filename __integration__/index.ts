@@ -5,7 +5,7 @@ async function getSearchResults(client: TendzinClient): Promise<CalendarSearchRe
     id: '251c991c-c3b1-4d96-8207-33af585504fd',
     months: 2,
     offset: 1,
-    period: 2,
+    period: 1,
   })
   return result
 }
